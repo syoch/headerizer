@@ -6,31 +6,58 @@ def is_identifier(token: str) -> bool:
     return token.isalpha() or token.isdigit() or token == '_'
 
 
-def tokenize(src: str) -> List[str]:
-    tokens = []
-    while src:
-        ch = src[0]
-        next = src[1] if len(src) > 1 else None
+class Tokenizer():
+    def __init__(self, src: str):
+        self.tokens = []
+        self.index = 0
+        self.tokenize(src)
 
-        if ch in string.whitespace:
-            src = src[1:]
-            continue
+    def peek(self) -> str:
+        return self.tokens[self.index]
 
-        token = ""
-        if is_identifier(ch):
-            while is_identifier(src[0]):
-                token += src[0]
-                src = src[1:]
-        elif ch == ':' and next == ':':
-            token = '::'
-            src = src[2:]
+    def next(self) -> str:
+        self.index += 1
+        return self.tokens[self.index - 1]
+
+    def has_more(self) -> bool:
+        return self.index < len(self.tokens)
+
+    def expect(self, tok: str) -> str:
+        if self.peek() == tok:
+            self.next()
+            return True
         else:
-            token = src[0]
-            src = src[1:]
+            raise Exception(f'Expected {tok}, got {self.peek()}')
 
-        tokens.append(token)
+    def consume(self, tok: str) -> str:
+        if self.peek() == tok:
+            self.next()
+            return True
+        else:
+            return False
 
-    return tokens
+    def tokenize(self, src: str) -> None:
+        while src:
+            ch = src[0]
+            next = src[1] if len(src) > 1 else None
+
+            if ch in string.whitespace:
+                src = src[1:]
+                continue
+
+            token = ""
+            if is_identifier(ch):
+                while is_identifier(src[0]):
+                    token += src[0]
+                    src = src[1:]
+            elif ch == ':' and next == ':':
+                token = '::'
+                src = src[2:]
+            else:
+                token = src[0]
+                src = src[1:]
+
+            self.tokens.append(token)
 
 
 class FuncName():
@@ -63,6 +90,6 @@ def read_func(tokens: List[str]) -> Tuple[str, List[str]]:
 
 
 if __name__ == "__main__":
-    tokens = tokenize(
+    tokenizer = Tokenizer(
         "hello1<in_t> std::exception::operator +(hello<int, void<t>>)")
-    print(tokens)
+    print(tokenizer.tokens)
