@@ -1,0 +1,10 @@
+fp = open("demangled_functions")
+fp.readline()
+fp.readline()
+fp.readline()
+print(fp.readline()[9:-1])
+# for line in fp:
+#     addr = int(line[0:8], 16)
+#     name = line[9:].strip()
+#     print(addr, name)
+fp.close()

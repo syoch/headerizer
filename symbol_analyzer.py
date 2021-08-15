@@ -6,6 +6,23 @@ def is_identifier(token: str) -> bool:
     return token.isalpha() or token.isdigit() or token == '_'
 
 
+class Type():
+    def __init__(self) -> None:
+        self.length = 1
+        self.name = ""
+        self.args = []
+        self.return_type = ""
+
+
+class FuncName():
+    def __init__(self) -> None:
+        self.is_static = False
+        self.namespaces = []
+        self.name = ""
+        self.args = []
+        self.return_type = ""
+
+
 class Tokenizer():
     def __init__(self, src: str):
         self.tokens = []
@@ -59,22 +76,8 @@ class Tokenizer():
 
             self.tokens.append(token)
 
-
-class FuncName():
-    def __init__(self) -> None:
-        self.is_static = False
-        self.namespaces = []
-        self.name = ""
-        self.args = []
-        self.return_type = ""
-
-
-class Type():
-    def __init__(self) -> None:
-        self.length = 0
-        self.name = ""
-        self.args = []
-        self.return_type = ""
+    def read_type(self) -> Type:
+        ret = Type()
 
 
 def read_type(tokens: List[str]) -> Tuple[str, List[str]]:
