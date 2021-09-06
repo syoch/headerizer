@@ -1,3 +1,4 @@
+from typing import Dict, List
 import rpx
 import ghs_demangle as ghs_demangle
 import logging
@@ -20,7 +21,7 @@ def get_name(obj: ghs_demangle.Function) -> str:
 demangler = ghs_demangle.Demangler()
 elf = rpx.Elf("/home/syoch/Documents/reversing/Minecraft.Client.rpx")
 
-tree = {}
+table: Dict[str, List[ghs_demangle.Function]] = {}
 
 for func in elf.getFunctions():
     mangled_name = func.name.decode()
@@ -37,17 +38,16 @@ for func in elf.getFunctions():
 
     if not f.name.namespace.path:
         continue
-    cursor = tree
-    for tmp in f.name.namespace.path:
-        part = tmp.name
-        if part not in cursor:
-            cursor[part] = {}
-        cursor = cursor[part]
 
-    if "funcs" not in cursor:
-        cursor["funcs"] = []
-
-    cursor["funcs"].append(f)
+    path = [
+        x.name
+        for x in f.name.namespace.path
+        if x.name != ""
+    ]
+    key = "/".join(path)
+    if key not in table:
+        table[key] = []
+    table[key].append(f)
 
 with open("functable.pkl", "wb") as f:
-    pickle.dump(tree, f)
+    pickle.dump(table, f)
