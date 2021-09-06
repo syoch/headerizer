@@ -23,11 +23,11 @@ for key in functable:
     namespace_tail = ""
 
     namespace_head += "namespace mc {\n"
-    namespace_tail += "} // namespace mc\n"
+    namespace_tail += "}  // namespace mc\n"
 
     for part in key.split("/"):
         namespace_head = namespace_head + "namespace " + part + " {\n"
-        namespace_tail = "} // namespace " + part + "\n"+namespace_tail
+        namespace_tail = "}  // namespace " + part + "\n"+namespace_tail
 
     with open("hpp/"+key+".hpp", "w+") as f:
         f.writelines([
@@ -49,7 +49,7 @@ for key in functable:
             namespace_head,
             f'\n',
             f'class KEY : public UseInternalAllocator {{\n',
-            f'public:\n',
+            f' public:\n',
             # f'    //! "enum class"?\n',
             # f'\n',
             # f'    //! type name;\n',
