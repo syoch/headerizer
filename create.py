@@ -14,7 +14,7 @@ functable: Dict[str, List[ghs_demangle.Function]] = {
 for key in functable:
     lst = functable[key]
 
-    ident = key.replace("/", "_")
+    ident = "MC_" + key.replace("/", "_").upper() + "_H_"
 
     path = ("hpp/"+key).rpartition("/")[0]
     os.makedirs(path, exist_ok=True)
@@ -31,8 +31,8 @@ for key in functable:
 
     with open("hpp/"+key+".hpp", "w+") as f:
         f.writelines([
-            f'#ifndef MC_{ident}_H_\n',
-            f'#define MC_{ident}_H_\n',
+            f'#ifndef {ident}\n',
+            f'#define {ident}\n',
             f'\n',
             f'//! include some headers\n',
             f'\n',
@@ -62,6 +62,6 @@ for key in functable:
             f'\n',
             namespace_tail,
             f'\n',
-            f'#endif\n'
+            f'#endif  // {ident}\n'
         ])
     break
